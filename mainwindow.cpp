@@ -7,11 +7,31 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
      connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
+     connect(ui->studentSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(displayInfo()));
 }
+
+void MainWindow::displayInfo()
+{
+    int index;
+    index = ui->studentSelect->currentIndex();
+    KedighKid current = kids.at(index);
+    QString balance, balance1;
+    QString dollaSign = "$";
+    balance1.setNum(current.getBalance());
+    balance = dollaSign + " " + balance1;
+    ui->name->setText(current.name);
+    ui->balance->setText(balance);
+    ui->email->setText(current.getEmail());
+}//update the display per selection.
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+inline int toInt(QString s)
+{
+    return 1;
 }
 
 void MainWindow::parseFile(QString fileInput)
@@ -27,6 +47,7 @@ void MainWindow::parseFile(QString fileInput)
         QTextStream in(&file);
         QList<QString> asList;
         QList<QString> dataList;
+        QString email;
 
         while (!in.atEnd())
         {
@@ -57,10 +78,25 @@ void MainWindow::parseFile(QString fileInput)
               From: lastname [email]
               Sent: date **/
 
-            if (asList.at(z).contains("lastname: "))
+
+
+            if (asList.at(z).contains("From"))
+            {
+                int i1, i2;
+                QString current;
+                current = asList.at(z);
+                i1 = current.indexOf("[");
+                current.remove(0, i1 + 1);
+                i2 = current.indexOf("]");
+                current.remove(i2, current.size() - 1);
+
+                email = current;
+            }
+
+            else if (asList.at(z).contains("lastname: "))
             {
                 QString lastname, period, version, denom,
-                        serial, remote, email, date;
+                        serial, remote, date;
                 //we have a section to extract from.
                 QString toSize;
                 QString current;
@@ -101,14 +137,46 @@ void MainWindow::parseFile(QString fileInput)
                 current.remove(0, toSize.size() - 1);
                 remote = current;
 
+                //get email
+
+                bool exists = false;
+                int index = -1;
+
+                for (int k = 0; k < kids.size(); k++)
+                {
+                    if (kids.at(k).name == lastname)
+                    { exists = true; index = k; break; }
+                }
+
+                KedighKid toPush(lastname, period, email);
+
+                if (!exists)
+                {
+                    kids.push_back(toPush);
+
+                    KedighCash dolla(serial, date);
+                    kids.last().addMoney(dolla);
+                }//end if.
+
+                else
+                {
+                    KedighCash dolla(serial, date);
+                    kids.last().addMoney(dolla);
+                }//end else
+
                 dataList.push_back(lastname +" "+period+" "+version+
-                                   " "+denom+" "+" "+serial+" "+remote);
+                                   " "+denom+" "+" "+serial+" "+remote+" "+email);
             }
         }
 
-        for (int y = 0; y < dataList.size(); y++)
+        for (int i = 0; i < kids.size(); i++)
         {
-            ui->fileDisplay->addItem(dataList.at(y));
+            ui->studentSelect->addItem(kids.at(i).name);
+        }
+
+        for (int y = 0; y < kids.size(); y++)
+        {
+            ui->fileDisplay->addItem(kids.at(y).name);
         }
 
         file.close();

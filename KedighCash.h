@@ -6,20 +6,26 @@
 class KedighCash
 {
 public:
-    KedighCash(QString last, QString _email, QString date,
-               QString per, QString ser, QString remote, int denom);
+    KedighCash(QString ser,  QString _date, int denom = 1);
 
     QString toString();
 
-private:
-    int denomination;
+    int getValue();
+    int m_val;
 
-    QString lastname;
-    QString email;
-    QString dateSent;
-    QString period;
-    QString serial;
-    QString remoteAddress;
+    QString getCashDate();
+    QString getSerial();
+
+    bool hasOwner();
+
+    void setOwner(QString owner);
+    void reset();
+
+private:
+    QString m_owner;
+    QString m_date;
+    QString m_serial;
+    int m_denomination;
 };
 
 #endif // KEDIGHCASH_H

@@ -8,6 +8,7 @@
 #include <QString>
 #include <QTextStream>
 #include "KedighCash.h"
+#include "kedighkid.h"
 
 namespace Ui {
 class MainWindow;
@@ -21,10 +22,12 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     Q_SLOT void open();
+    Q_SLOT void displayInfo();
     
 private:
     Ui::MainWindow *ui;
     QList<KedighCash> cashList;
+    QList<KedighKid> kids;
     void parseFile(QString fileInput);
 };
 
