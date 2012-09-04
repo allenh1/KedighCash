@@ -7,13 +7,19 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
      connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
+     connect(ui->searchButton, SIGNAL(clicked()), this, SLOT(findCash()));
+     connect(ui->fileDisplay, SIGNAL(currentRowChanged()), this, SLOT(displayInfo2()));
+     connect(ui->actionExport, SIGNAL(triggered()), this, SLOT(exportTab()));
      connect(ui->studentSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(displayInfo()));
 }
 
 void MainWindow::displayInfo()
 {
-    int index;
+    int index, indexb;
     index = ui->studentSelect->currentIndex();
+
+    if (index == -1)
+        index = 0;
     KedighKid current = kids.at(index);
     QString balance, balance1;
     QString dollaSign = "$";
@@ -22,6 +28,62 @@ void MainWindow::displayInfo()
     ui->name->setText(current.name);
     ui->balance->setText(balance);
     ui->email->setText(current.getEmail());
+
+    QString daMoney;
+
+    QList<KedighCash> monay;
+    for (int t = 0; t < current.cashOwned().size(); t++)
+    {
+        KedighCash toPush = current.cashOwned().at(t);
+        monay.push_back(toPush);
+    }
+
+    for (int q = 0; q < monay.size(); q++)
+    {
+        QString toAppend = "";
+        toAppend += monay.at(q).m_string;
+        daMoney += toAppend;
+        daMoney += "\n";
+    }//end for x.
+
+    ui->cashListView->setText(daMoney);
+}//update the display per selection.
+
+void MainWindow::displayInfo2()
+{
+    int index;
+
+    index = ui->fileDisplay->currentIndex().row();
+
+    if (index == -1)
+        index = 0;
+    KedighKid current = kids.at(index);
+    QString balance, balance1;
+    QString dollaSign = "$";
+    balance1.setNum(current.getBalance());
+    balance = dollaSign + " " + balance1;
+    ui->name->setText(current.name);
+    ui->balance->setText(balance);
+    ui->email->setText(current.getEmail());
+
+    QString daMoney;
+
+    QList<KedighCash> monay;
+    for (int t = 0; t < current.cashOwned().size(); t++)
+    {
+        KedighCash toPush = current.cashOwned().at(t);
+        monay.push_back(toPush);
+    }
+
+    for (int q = 0; q < monay.size(); q++)
+    {
+        QString toAppend = "";
+        toAppend += monay.at(q).m_string;
+        daMoney += toAppend;
+        daMoney += "\n";
+    }//end for x.
+
+    ui->cashListView->setText(daMoney);
 }//update the display per selection.
 
 MainWindow::~MainWindow()
@@ -31,7 +93,7 @@ MainWindow::~MainWindow()
 
 inline int toInt(QString s)
 {
-    return 1;
+    return s.toInt();
 }
 
 void MainWindow::parseFile(QString fileInput)
@@ -47,7 +109,7 @@ void MainWindow::parseFile(QString fileInput)
         QTextStream in(&file);
         QList<QString> asList;
         QList<QString> dataList;
-        QString email;
+        QString email, date;
 
         while (!in.atEnd())
         {
@@ -85,18 +147,39 @@ void MainWindow::parseFile(QString fileInput)
                 int i1, i2;
                 QString current;
                 current = asList.at(z);
-                i1 = current.indexOf("[");
-                current.remove(0, i1 + 1);
-                i2 = current.indexOf("]");
-                current.remove(i2, current.size() - 1);
+                if (current.contains("["))
+                {
+                    i1 = current.indexOf("[");
+                    current.remove(0, i1 + 1);
+                    i2 = current.indexOf("]");
+                    current.remove(i2, current.size() - 1);
+                }//end if
+
+                else
+                {
+                    i1 = current.indexOf("<");
+                    current.remove(0, i1 + 1);
+                    i2 = current.indexOf(">");
+                    current.remove(i2, current.size() - 1);
+                }
 
                 email = current;
+                z++;
+
+                current = asList.at(z);
+
+                i1 = current.indexOf(",");
+                current.remove(0, i1 + 1);
+                i2 = current.indexOf(":");
+                current.remove(i2 - 2, current.size() - 1);
+                date = current;
+                z++;
             }
 
             else if (asList.at(z).contains("lastname: "))
             {
                 QString lastname, period, version, denom,
-                        serial, remote, date;
+                        serial, remote;
                 //we have a section to extract from.
                 QString toSize;
                 QString current;
@@ -108,34 +191,51 @@ void MainWindow::parseFile(QString fileInput)
                 lastname = current;
                 z++; //we can go to the next line now
 
-                toSize = "period: ";
-                current = asList.at(z);
-                current.remove(0, toSize.size() - 1);
-                period = current;
-                z++;
+                if (asList.at(z).contains("period: "))
+                {
+                    toSize = "period: ";
+                    current = asList.at(z);
+                    current.remove(0, toSize.size() - 1);
+                    period = current;
+                    z++;
+                }//make sure it exists!
+                else
+                    period = "invalid";
 
-                current = asList.at(z);
-                toSize = "version: ";
-                current.remove(0, toSize.size() - 1);
-                version = current;
-                z++;
+                if (asList.at(z).contains("version"))
+                {
+                    current = asList.at(z);
+                    toSize = "version: ";
+                    current.remove(0, toSize.size() - 1);
+                    version = current;
+                    z++;
+                }
 
-                toSize = "denomination: ";
-                current = asList.at(z);
-                current.remove(0, toSize.size() - 1);
-                denom = current;
-                z++;
+                if (asList.at(z).contains("denomination"))
+                {
+                    toSize = "denomination: ";
+                    current = asList.at(z);
+                    current.remove(0, toSize.size() - 1);
+                    denom = current;
+                    z++;
+                }
 
-                toSize = "serial: ";
-                current = asList.at(z);
-                current.remove(0, toSize.size() - 1);
-                serial = current;
-                z += 3; //go to remote line
+                if (asList.at(z).contains("serial"))
+                {
+                    toSize = "serial: ";
+                    current = asList.at(z);
+                    current.remove(0, toSize.size() - 1);
+                    serial = current;
+                    z += 3; //go to remote line
+                }
 
-                toSize = "REMOTE_ADDR: ";
-                current = asList.at(z);
-                current.remove(0, toSize.size() - 1);
-                remote = current;
+                if (asList.at(z).contains("REMOTE_ADDR"))
+                {
+                    toSize = "REMOTE_ADDR: ";
+                    current = asList.at(z);
+                    current.remove(0, toSize.size() - 1);
+                    remote = current;
+                }
 
                 //get email
 
@@ -144,7 +244,7 @@ void MainWindow::parseFile(QString fileInput)
 
                 for (int k = 0; k < kids.size(); k++)
                 {
-                    if (kids.at(k).name == lastname)
+                    if (QString::compare(kids.at(k).name, lastname, Qt::CaseInsensitive) == 0)
                     { exists = true; index = k; break; }
                 }
 
@@ -154,18 +254,15 @@ void MainWindow::parseFile(QString fileInput)
                 {
                     kids.push_back(toPush);
 
-                    KedighCash dolla(serial, date);
+                    KedighCash dolla(serial, date, lastname, remote, toInt(denom));
                     kids.last().addMoney(dolla);
                 }//end if.
 
                 else
                 {
-                    KedighCash dolla(serial, date);
+                    KedighCash dolla(serial, date, lastname, remote, toInt(denom));
                     kids.last().addMoney(dolla);
                 }//end else
-
-                dataList.push_back(lastname +" "+period+" "+version+
-                                   " "+denom+" "+" "+serial+" "+remote+" "+email);
             }
         }
 
@@ -180,6 +277,78 @@ void MainWindow::parseFile(QString fileInput)
         }
 
         file.close();
+    }//end if
+}
+
+void MainWindow::findCash()
+{
+    QString searchInput;
+    bool broke = false;
+    searchInput = ui->serialInput->text();
+
+    /** Now we bring up the second window
+      to see where exactly the serial is found.
+    **/
+
+    for (int i = 0; i < kids.size(); i++)
+    {
+        KedighKid current = kids.at(i);
+        for (int x = 0; x < current.cashOwned().size(); x++)
+        {
+            KedighCash toCheck = current.cashOwned().at(x);
+            if (QString::compare(toCheck.getSerial(),  searchInput, Qt::CaseInsensitive) == 0)
+            {
+                //found the student!
+                ui->studentSelect->setCurrentIndex(i);
+                broke = true;
+                break;
+            }//end if
+
+            if (broke)
+                break;
+        }//end for x.
+
+        if (broke)
+            break;
+    }//end for i.
+}//ya.
+
+QString MainWindow::getList()
+{
+    QString toReturn;
+
+    toReturn = "lastname \t period \t balance \n";
+
+    for (int x = 0; x < kids.size(); x++)
+    {
+        KedighKid thisKid = kids.at(x);
+        toReturn += thisKid.getSummary();
+        toReturn += "\n";
+    }//end for x.
+
+    return toReturn;
+}//get the file.
+
+void MainWindow::exportTab()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Text Files (*.txt);;C++ Files (*.cpp *.h *.cc)"));
+
+    if (fileName != "")
+    {
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly))
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Could not save file"));
+            return;
+        }//end if
+
+        else
+        {
+            QTextStream stream(&file);
+            stream << getList();
+            stream.flush();
+            file.close();
+        }//end else
     }//end if
 }
 

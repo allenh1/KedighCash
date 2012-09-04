@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>646</width>
+    <width>718</width>
     <height>540</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Kedigh Cash</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="label">
@@ -32,8 +32,8 @@
      <rect>
       <x>10</x>
       <y>50</y>
-      <width>191</width>
-      <height>311</height>
+      <width>271</width>
+      <height>351</height>
      </rect>
     </property>
    </widget>
@@ -50,8 +50,8 @@
    <widget class="QLineEdit" name="name">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>130</y>
+      <x>470</x>
+      <y>140</y>
       <width>211</width>
       <height>27</height>
      </rect>
@@ -60,7 +60,7 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>370</x>
       <y>140</y>
       <width>66</width>
       <height>17</height>
@@ -73,8 +73,8 @@
    <widget class="QLabel" name="label_email">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>190</y>
+      <x>370</x>
+      <y>180</y>
       <width>66</width>
       <height>17</height>
      </rect>
@@ -86,7 +86,7 @@
    <widget class="QLineEdit" name="email">
     <property name="geometry">
      <rect>
-      <x>420</x>
+      <x>470</x>
       <y>180</y>
       <width>211</width>
       <height>27</height>
@@ -96,8 +96,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>240</y>
+      <x>300</x>
+      <y>220</y>
       <width>121</width>
       <height>20</height>
      </rect>
@@ -109,8 +109,8 @@
    <widget class="QLineEdit" name="balance">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>230</y>
+      <x>470</x>
+      <y>220</y>
       <width>211</width>
       <height>27</height>
      </rect>
@@ -121,7 +121,7 @@
      <rect>
       <x>370</x>
       <y>310</y>
-      <width>271</width>
+      <width>341</width>
       <height>161</height>
      </rect>
     </property>
@@ -129,8 +129,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>310</y>
+      <x>300</x>
+      <y>320</y>
       <width>71</width>
       <height>20</height>
      </rect>
@@ -139,13 +139,49 @@
      <string>Currency:</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="searchButton">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>40</y>
+      <width>98</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Search</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="serialInput">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>40</y>
+      <width>113</width>
+      <height>27</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>10</y>
+      <width>121</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Search For Serial</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>646</width>
+     <width>718</width>
      <height>25</height>
     </rect>
    </property>
@@ -154,6 +190,8 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionExport"/>
    </widget>
    <addaction name="menuOpen"/>
   </widget>
@@ -169,6 +207,16 @@
   <action name="actionOpen">
    <property name="text">
     <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>Export</string>
    </property>
   </action>
  </widget>

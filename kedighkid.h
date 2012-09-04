@@ -7,11 +7,13 @@ class KedighKid
 public:
     KedighKid(QString _name, QString _period, QString _email);
     int getBalance();
+    int compareTo(KedighKid other);
     void addMoney(KedighCash toAdd);
 
     QList<KedighCash> cashOwned();
 
     QString name;
+    QString getSummary();
     QString getEmail();
 
 private:

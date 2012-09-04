@@ -7,14 +7,18 @@ class KedighCash
 {
 public:
     KedighCash(QString ser,  QString _date, int denom = 1);
+    KedighCash(QString ser, QString _date, QString _owner, QString cashAddr, int denom);
 
-    QString toString();
+    void toString();
 
     int getValue();
     int m_val;
 
     QString getCashDate();
+
     QString getSerial();
+    QString m_string;
+    QString getAddress();
 
     bool hasOwner();
 
@@ -23,6 +27,7 @@ public:
 
 private:
     QString m_owner;
+    QString m_remoteAddr;
     QString m_date;
     QString m_serial;
     int m_denomination;
