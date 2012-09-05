@@ -38,15 +38,13 @@ void MainWindow::displayInfo()
         monay.push_back(toPush);
     }
 
+    ui->cashListView->clear();
     for (int q = 0; q < monay.size(); q++)
     {
         QString toAppend = "";
         toAppend += monay.at(q).m_string;
-        daMoney += toAppend;
-        daMoney += "\n";
+        ui->cashListView->addItem(toAppend);
     }//end for x.
-
-    ui->cashListView->setText(daMoney);
 }//update the display per selection.
 
 void MainWindow::displayInfo2()
@@ -75,15 +73,14 @@ void MainWindow::displayInfo2()
         monay.push_back(toPush);
     }
 
+    ui->cashListView->clear();
     for (int q = 0; q < monay.size(); q++)
     {
         QString toAppend = "";
         toAppend += monay.at(q).m_string;
         daMoney += toAppend;
-        daMoney += "\n";
+        ui->cashListView->addItem(toAppend);
     }//end for x.
-
-    ui->cashListView->setText(daMoney);
 }//update the display per selection.
 
 MainWindow::~MainWindow()

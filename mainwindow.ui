@@ -116,21 +116,11 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="cashListView">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>310</y>
-      <width>341</width>
-      <height>161</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>300</x>
-      <y>320</y>
+      <x>290</x>
+      <y>290</y>
       <width>71</width>
       <height>20</height>
      </rect>
@@ -173,6 +163,16 @@
     </property>
     <property name="text">
      <string>Search For Serial</string>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="cashListView">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>290</y>
+      <width>341</width>
+      <height>181</height>
+     </rect>
     </property>
    </widget>
   </widget>
