@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
      connect(ui->fileDisplay, SIGNAL(currentRowChanged()), this, SLOT(displayInfo2()));
      connect(ui->actionExport, SIGNAL(triggered()), this, SLOT(exportTab()));
      connect(ui->studentSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(displayInfo()));
+     connect(ui->deleteCurrency, SIGNAL(clicked()), this, SLOT(removeCash()));
 }
 
 void MainWindow::displayInfo()
@@ -275,6 +276,22 @@ void MainWindow::parseFile(QString fileInput)
 
         file.close();
     }//end if
+}
+
+
+void MainWindow::removeCash()
+{
+    int index = 0;
+    int cash_index;
+    cash_index = ui->cashListView->currentIndex().row();
+    index = (int) ui->studentSelect->currentIndex();
+
+    KedighKid current = kids.at(index);
+
+    current.removeMoney(cash_index);
+    kids.removeAt(index);
+    kids.insert(index, current);
+    displayInfo();
 }
 
 void MainWindow::findCash()

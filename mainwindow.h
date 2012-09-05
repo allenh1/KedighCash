@@ -26,12 +26,14 @@ public:
     Q_SLOT void displayInfo();
     Q_SLOT void displayInfo2();
     Q_SLOT void findCash();
+    Q_SLOT void removeCash();
     QString getList();
+    QList<KedighKid> kids;
     
 private:
     Ui::MainWindow *ui;
     QList<KedighCash> cashList;
-    QList<KedighKid> kids;
+
     void parseFile(QString fileInput);
     void sortKids();
 };

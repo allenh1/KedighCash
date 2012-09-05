@@ -13,6 +13,11 @@ void KedighKid::addMoney(KedighCash toAdd)
     money.push_back(toAdd);
 }
 
+void KedighKid::removeMoney(int index)
+{
+    money.removeAt(index);
+}
+
 QString KedighKid::getEmail()
 {
     return email;

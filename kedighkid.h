@@ -9,6 +9,7 @@ public:
     int getBalance();
     int compareTo(KedighKid other);
     void addMoney(KedighCash toAdd);
+    void removeMoney(int index);
 
     QList<KedighCash> cashOwned();
 
