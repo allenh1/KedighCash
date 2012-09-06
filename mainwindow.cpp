@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
      connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
+     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveData()));
      connect(ui->searchButton, SIGNAL(clicked()), this, SLOT(findCash()));
      connect(ui->fileDisplay, SIGNAL(currentRowChanged()), this, SLOT(displayInfo2()));
      connect(ui->actionExport, SIGNAL(triggered()), this, SLOT(exportTab()));
@@ -342,6 +343,53 @@ QString MainWindow::getList()
 
     return toReturn;
 }//get the file.
+
+QString MainWindow::dataOutput()
+{
+    QString toReturn = "";
+    //serial    denom   owner
+    for (int x = 0; x < kids.size(); x++)
+    {
+        KedighKid current = kids.at(x);
+        QList<KedighCash> monay = current.cashOwned();
+
+        for (int y = 0; y < monay.size(); y++)
+        {
+            KedighCash monaymonay = monay.at(y);
+            QString fromNum;
+            fromNum.setNum(monaymonay.getValue());
+            toReturn += monaymonay.getSerial() +"\t"
+                    + fromNum +"\t"
+                    + current.name + "\n";
+        }//end for y.
+    }//end for x.
+
+    return toReturn;
+}
+
+void MainWindow::saveData()
+{
+    //serial    denom   owner
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Text Files (*.txt);;C++ Files (*.cpp *.h *.cc)"));
+
+    if (fileName != "")
+    {
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly))
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Could not save file"));
+            return;
+        }//end if
+
+        else
+        {
+            QTextStream stream(&file);
+            stream << dataOutput();
+            stream.flush();
+            file.close();
+        }//end else
+    }//end if
+}
 
 void MainWindow::exportTab()
 {
