@@ -5,6 +5,7 @@
 #include <QList>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QtAlgorithms>
 #include <QString>
 #include <QTextStream>
 #include "KedighCash.h"
@@ -36,6 +37,9 @@ public:
 private:
     Ui::MainWindow *ui;
     QList<KedighCash> cashList;
+
+    bool caseInsensitiveLessThan(const KedighCash &s1,
+                                 const KedighCash &s2);
 
     void parseFile(QString fileInput);
     void sortKids();

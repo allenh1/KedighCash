@@ -18,6 +18,7 @@ public:
 
     QString getSerial();
     QString m_string;
+    QString getOwner();
     QString getAddress();
 
     bool hasOwner();
@@ -25,12 +26,20 @@ public:
     void setOwner(QString owner);
     void reset();
 
+    bool operator < (const KedighCash& k2) const
+    {
+        KedighCash other = k2;
+        return m_serial.toLower() < other.getSerial().toLower();
+    }
+
 private:
     QString m_owner;
     QString m_remoteAddr;
     QString m_date;
     QString m_serial;
     int m_denomination;
+
+
 };
 
 #endif // KEDIGHCASH_H

@@ -21,6 +21,9 @@ KedighCash::KedighCash(QString ser, QString _date, QString _owner, QString cashA
 void KedighCash::setOwner(QString owner)
 { m_owner = owner; }
 
+QString KedighCash::getOwner()
+{ return m_owner; }
+
 void KedighCash::reset()
 { m_owner = ""; }
 

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -344,14 +345,41 @@ QString MainWindow::getList()
     return toReturn;
 }//get the file.
 
-QString MainWindow::dataOutput()
+bool caseInsensitiveLessThan(const KedighCash &s1, const KedighCash &s2)
 {
-    QString toReturn = "";
-    //serial    denom   owner
+    KedighCash k1 = s1;
+    KedighCash k2 = s2;
+    return k1 < k2;
+}//case-insensitive alphabetical sort.
+
+void MainWindow::sortKids()
+{
+    cashList.clear();
+
     for (int x = 0; x < kids.size(); x++)
     {
         KedighKid current = kids.at(x);
         QList<KedighCash> monay = current.cashOwned();
+
+        for (int y = 0; y < monay.size(); y++)
+        {
+            QString toPush = "";
+            KedighCash monaymonay = monay.at(y);
+            cashList.push_back(monaymonay);
+        }//end for y.
+    }
+
+    qSort(cashList.begin(), cashList.end());
+}
+
+QString MainWindow::dataOutput()
+{
+    sortKids();
+    QString toReturn = "";
+    //serial    denom   owner
+    for (int x = 0; x < cashList.size(); x++)
+    {
+        QList<KedighCash> monay = cashList;
 
         for (int y = 0; y < monay.size(); y++)
         {
@@ -360,7 +388,7 @@ QString MainWindow::dataOutput()
             fromNum.setNum(monaymonay.getValue());
             toReturn += monaymonay.getSerial() +"\t"
                     + fromNum +"\t"
-                    + current.name + "\n";
+                    + monaymonay.getOwner() + "\n";
         }//end for y.
     }//end for x.
 
