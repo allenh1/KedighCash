@@ -32,6 +32,18 @@ public:
         return m_serial.toLower() < other.getSerial().toLower();
     }
 
+    bool operator > (const KedighCash& k2) const
+    {
+        KedighCash other = k2;
+        return m_serial.toLower() > other.getSerial().toLower();
+    }//end bool
+
+    bool operator == (const KedighCash& k2) const
+    {
+        KedighCash other = k2;
+        return m_serial.toLower() == other.getSerial().toLower();
+    }//end bool
+
 private:
     QString m_owner;
     QString m_remoteAddr;

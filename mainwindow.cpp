@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
      connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
      connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveData()));
      connect(ui->searchButton, SIGNAL(clicked()), this, SLOT(findCash()));
-     connect(ui->fileDisplay, SIGNAL(currentRowChanged()), this, SLOT(displayInfo2()));
+     connect(ui->fileDisplay, SIGNAL(itemSelectionChanged()), this, SLOT(displayInfo2()));
      connect(ui->actionExport, SIGNAL(triggered()), this, SLOT(exportTab()));
      connect(ui->studentSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(displayInfo()));
      connect(ui->deleteCurrency, SIGNAL(clicked()), this, SLOT(removeCash()));
@@ -266,6 +266,7 @@ void MainWindow::parseFile(QString fileInput)
             }
         }
 
+        qSort(kids.begin(), kids.end());
         for (int i = 0; i < kids.size(); i++)
         {
             ui->studentSelect->addItem(kids.at(i).name);
