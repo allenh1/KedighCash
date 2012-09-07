@@ -55,6 +55,7 @@ void MainWindow::displayInfo2()
     int index;
 
     index = ui->fileDisplay->currentIndex().row();
+    ui->studentSelect->setCurrentIndex(index);
 
     if (index == -1)
         index = 0;
