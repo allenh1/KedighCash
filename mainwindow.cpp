@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
      connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
+     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(exit()));
      connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveData()));
      connect(ui->searchButton, SIGNAL(clicked()), this, SLOT(findCash()));
      connect(ui->fileDisplay, SIGNAL(itemSelectionChanged()), this, SLOT(displayInfo2()));
@@ -15,6 +16,18 @@ MainWindow::MainWindow(QWidget *parent) :
      connect(ui->studentSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(displayInfo()));
      connect(ui->deleteCurrency, SIGNAL(clicked()), this, SLOT(removeCash()));
 }
+
+void MainWindow::exit()
+{
+    QMessageBox messageBox;
+    messageBox.setWindowTitle(tr("Exit"));
+    messageBox.setText(tr("Do you really want to quit?"));
+    messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    messageBox.setDefaultButton(QMessageBox::No);
+
+    if (messageBox.exec() == QMessageBox::Yes)
+        qApp->quit();
+}//end void
 
 void MainWindow::displayInfo()
 {
