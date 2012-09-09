@@ -35,6 +35,24 @@ public:
         return name.toLower() == other.name.toLower();
     }//end bool
 
+    bool operator != (const KedighKid& k2) const
+    {
+        KedighKid other = k2;
+        return name.toLower() != other.name.toLower();
+    }
+
+    bool operator >= (const KedighKid& k2) const
+    {
+        KedighKid other = k2;
+        return name.toLower() >= other.name.toLower();
+    }
+
+    bool operator <= (const KedighKid& k2) const
+    {
+        KedighKid other = k2;
+        return name.toLower() <= other.name.toLower();
+    }//end bool
+
 private:
     void updateAccount();
 
