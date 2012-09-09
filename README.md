@@ -7,9 +7,14 @@ account balances. The cash can be saved, and the user can "cash" their submitted
 
 Export Types: 
 ============
-There are two types of export: tab delineated by serial number, and tab delineated by owner (has their name, class period and balance). 
+There are two types of export: 
+- tab delineated by serial number
+- tab delineated by owner (has their name, class period and balance). 
 
 Supported Operating Systems: 
 ============================
 - Ubuntu Linux (any linux with a Qt compiler)
+  - qmake
+  - make
 - Windows XP, Windows 7 
+  - Run the installer
