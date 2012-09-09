@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "ui_about.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 
@@ -9,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
      connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
      connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(exit()));
+     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
      connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveData()));
      connect(ui->searchButton, SIGNAL(clicked()), this, SLOT(findCash()));
      connect(ui->fileDisplay, SIGNAL(itemSelectionChanged()), this, SLOT(displayInfo2()));
@@ -28,6 +30,15 @@ void MainWindow::exit()
     if (messageBox.exec() == QMessageBox::Yes)
         qApp->quit();
 }//end void
+
+void MainWindow::about()
+{
+    QMessageBox messageBox;
+    messageBox.setWindowTitle(tr("About"));
+    messageBox.setText(tr("\t KedighCash \n \t Version: 1.0 \n               Author: Hunter Allen \n Email: hutner.allen@Vanderbilt.edu"));
+
+    messageBox.exec();
+}
 
 void MainWindow::displayInfo()
 {

@@ -29,6 +29,7 @@ public:
     Q_SLOT void findCash();
     Q_SLOT void saveData();
     Q_SLOT void exit();
+    Q_SLOT void about();
     Q_SLOT void removeCash();
 
     QString dataOutput();
