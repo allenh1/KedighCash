@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
+#include <QIcon>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -16,11 +17,15 @@ MainWindow::MainWindow(QWidget *parent) :
      connect(ui->actionExport, SIGNAL(triggered()), this, SLOT(exportTab()));
      connect(ui->studentSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(displayInfo()));
      connect(ui->deleteCurrency, SIGNAL(clicked()), this, SLOT(removeCash()));
+
+     ui->actionAbout->setIcon(QIcon("questionface.xpm"));
+     setWindowIcon(QIcon("btemp.xpm"));
 }
 
 void MainWindow::exit()
 {
     QMessageBox messageBox;
+    messageBox.setWindowIcon(QIcon("questionface.xpm"));
     messageBox.setWindowTitle(tr("Exit"));
     messageBox.setText(tr("Do you really want to quit?"));
     messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
@@ -35,7 +40,7 @@ void MainWindow::about()
     QMessageBox messageBox;
     messageBox.setWindowTitle(tr("About"));
     messageBox.setText(tr("\t KedighCash \n \t Version: 1.0 \n               Author: Hunter Allen \n Email: hutner.allen@Vanderbilt.edu"));
-
+    messageBox.setWindowIcon(QIcon("questionface.xpm"));
     messageBox.exec();
 }
 
