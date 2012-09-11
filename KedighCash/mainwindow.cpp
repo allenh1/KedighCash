@@ -8,18 +8,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
-     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(exit()));
-     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
-     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveData()));
-     connect(ui->searchButton, SIGNAL(clicked()), this, SLOT(findCash()));
-     connect(ui->fileDisplay, SIGNAL(itemSelectionChanged()), this, SLOT(displayInfo2()));
-     connect(ui->actionExport, SIGNAL(triggered()), this, SLOT(exportTab()));
-     connect(ui->studentSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(displayInfo()));
-     connect(ui->deleteCurrency, SIGNAL(clicked()), this, SLOT(removeCash()));
+    connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
+    connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(exit()));
+    connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
+    connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveData()));
+    connect(ui->searchButton, SIGNAL(clicked()), this, SLOT(findCash()));
+    connect(ui->fileDisplay, SIGNAL(itemSelectionChanged()), this, SLOT(displayInfo2()));
+    connect(ui->actionExport, SIGNAL(triggered()), this, SLOT(exportTab()));
+    connect(ui->studentSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(displayInfo()));
+    connect(ui->deleteCurrency, SIGNAL(clicked()), this, SLOT(removeCash()));
 
-     ui->actionAbout->setIcon(QIcon("questionface.xpm"));
-     setWindowIcon(QIcon("btemp.xpm"));
+    ui->actionAbout->setIcon(QIcon("questionface.xpm"));
+    setWindowIcon(QIcon("btemp.xpm"));
 }
 
 void MainWindow::exit()
@@ -293,6 +293,89 @@ void MainWindow::parseFile(QString fileInput)
                     kids.last().addMoney(dolla);
                 }//end else
             }
+
+            else if (asList.at(z).contains("denomination"))
+            {
+                QString lastname, period, version, denom,
+                        serial, remote;
+                //we have a section to extract from.
+                QString toSize;
+                QString current;
+                current = asList.at(z);
+                int theSize = 0;
+                toSize = "denomination: ";
+                current = asList.at(z);
+                current.remove(0, toSize.size() - 1);
+                denom = current;
+                z++;
+
+
+                if (asList.at(z).contains("serial"))
+                {
+                    toSize = "serial: ";
+                    current = asList.at(z);
+                    current.remove(0, toSize.size() - 1);
+                    serial = current;
+                    z ++; //go to remote line
+                }
+
+                if (asList.at(z).contains("period"))
+                {
+                    toSize = "period: ";
+                    current = asList.at(z);
+                    current.remove(0, toSize.size() - 1);
+                    period = current;
+                    z++;
+                }//make sure it exists!
+                else
+                    period = "invalid";
+
+
+                if (asList.at(z).contains("lastname"))
+                {
+                    current = asList.at(z);
+                    toSize = "lastname: ";
+                    theSize = toSize.size();
+                    current.remove(0, theSize - 1);
+                    lastname = current;
+                    z += 3; //we can go to the next line now
+                }
+
+                if (asList.at(z).contains("REMOTE_ADDR"))
+                {
+                    toSize = "REMOTE_ADDR: ";
+                    current = asList.at(z);
+                    current.remove(0, toSize.size() - 1);
+                    remote = current;
+                }
+
+                //get email
+
+                bool exists = false;
+                int index = -1;
+
+                for (int k = 0; k < kids.size(); k++)
+                {
+                    if (QString::compare(kids.at(k).name, lastname, Qt::CaseInsensitive) == 0)
+                    { exists = true; index = k; break; }
+                }
+
+                KedighKid toPush(lastname, period, email);
+
+                if (!exists)
+                {
+                    kids.push_back(toPush);
+
+                    KedighCash dolla(serial, date, lastname, remote, toInt(denom));
+                    kids.last().addMoney(dolla);
+                }//end if.
+
+                else
+                {
+                    KedighCash dolla(serial, date, lastname, remote, toInt(denom));
+                    kids.last().addMoney(dolla);
+                }//end else
+            }//end else if.
         }
 
         qSort(kids.begin(), kids.end());
