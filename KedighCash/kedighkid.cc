@@ -11,11 +11,15 @@ KedighKid::KedighKid(QString _name, QString _period, QString _email)
 void KedighKid::addMoney(KedighCash toAdd)
 {
     money.push_back(toAdd);
+    updateAccount();
+
 }
 
 void KedighKid::removeMoney(int index)
 {
     money.removeAt(index);
+    updateAccount();
+
 }
 
 QString KedighKid::getEmail()
@@ -60,7 +64,13 @@ void KedighKid::updateAccount()
 }
 
 QList<KedighCash> KedighKid::cashOwned()
-{ updateAccount(); return money;}
+{
+    QList<KedighCash> toReturn;
+    for (int x = 0; x < money.size(); x++)
+        toReturn.push_back(money.at(x));
+
+    return toReturn;
+}//copy money array.
 
 QString KedighKid::getSummary()
 {
@@ -89,3 +99,21 @@ int KedighKid::getBalance()
 
     return balance;
 }//end void.
+
+const QString KedighKid::getPeriod()
+{
+    QString toReturn = "";
+    toReturn = period;
+    return toReturn;
+}//accessor.
+/*
+KedighKid & KedighKid::operator=(const KedighKid& other) const
+{
+   lastname = other.name;
+   QString s_period = "";
+   s_period = other.getPeriod();
+   period = s_period;
+   email = other.getEmail();
+   return *this;  // Return a reference to myself.
+}*/
+

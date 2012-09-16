@@ -196,7 +196,7 @@
    <widget class="QPushButton" name="deleteCurrency">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>260</x>
       <y>440</y>
       <width>98</width>
       <height>27</height>
@@ -204,6 +204,42 @@
     </property>
     <property name="text">
      <string>Cash </string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="killKid">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>10</y>
+      <width>98</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Remove</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="totalMoney">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>440</y>
+      <width>113</width>
+      <height>27</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>440</y>
+      <width>141</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Total Currency: </string>
     </property>
    </widget>
   </widget>

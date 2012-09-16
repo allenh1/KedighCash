@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(exit()));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
+    connect(ui->killKid, SIGNAL(clicked()), this, SLOT(killKid()));
     connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveData()));
     connect(ui->searchButton, SIGNAL(clicked()), this, SLOT(findCash()));
     connect(ui->fileDisplay, SIGNAL(itemSelectionChanged()), this, SLOT(displayInfo2()));
@@ -21,6 +22,33 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionAbout->setIcon(QIcon("questionface.xpm"));
     setWindowIcon(QIcon("btemp.xpm"));
 }
+
+void MainWindow::killKid()
+{
+    int index = ui->studentSelect->currentIndex();
+
+    if (index == -1)
+        index = 0;
+
+    kids.removeAt(index);
+    ui->studentSelect->clear();
+    ui->fileDisplay->clear();
+
+    qSort(kids.begin(), kids.end());
+    for (int i = 0; i < kids.size(); i++)
+    {
+        ui->studentSelect->addItem(kids.at(i).name);
+    }
+
+    for (int y = 0; y < kids.size(); y++)
+    {
+        ui->fileDisplay->addItem(kids.at(y).name);
+    }
+
+    ui->studentSelect->setCurrentIndex(index);
+
+    countCash();
+}//remove kid.
 
 void MainWindow::exit()
 {
@@ -391,8 +419,32 @@ void MainWindow::parseFile(QString fileInput)
 
         file.close();
     }//end if
+
+    countCash();
 }
 
+
+void MainWindow::countCash()
+{
+    int sum = 0;
+    const QList<KedighKid> theKids = kids;
+
+    for (int x = 0; x < theKids.size(); x++)
+    {
+        KedighKid daKid = theKids.at(x);
+        QList<KedighCash> current = daKid.cashOwned();
+
+        for (int y = 0; y < current.size(); y++)
+        {
+            KedighCash cash = current.at(y);
+            sum += cash.getValue();
+        }//end for y.
+    }//loop through and count cash.
+
+    QString total;
+    total.setNum(sum);
+    ui->totalMoney->setText("$ "+total);
+}//end void.
 
 void MainWindow::removeCash()
 {

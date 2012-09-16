@@ -31,6 +31,7 @@ public:
     Q_SLOT void exit();
     Q_SLOT void about();
     Q_SLOT void removeCash();
+    Q_SLOT void killKid();
 
     QString dataOutput();
     QString getList();
@@ -45,6 +46,7 @@ private:
 
     void parseFile(QString fileInput);
     void sortKids();
+    void countCash();
 };
 
 #endif // MAINWINDOW_H

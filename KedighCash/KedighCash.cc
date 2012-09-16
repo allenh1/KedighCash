@@ -5,6 +5,12 @@ KedighCash::KedighCash(QString ser, QString _date, int denom)
     m_serial = ser;
     m_date = _date;
     m_denomination = denom;
+
+    if (m_serial.contains("o"))
+    {
+        m_serial.replace("o", "0");
+    }
+
     toString();
 }//end constructor.
 
@@ -31,7 +37,7 @@ bool KedighCash::hasOwner()
 { return m_owner != ""; }
 
 int KedighCash::getValue()
-{ return m_denomination; }
+{ int toReturn = m_denomination; return toReturn; }
 
 QString KedighCash::getCashDate()
 { return m_date; }

@@ -16,6 +16,7 @@ public:
     QString name;
     QString getSummary();
     QString getEmail();
+    const QString getPeriod();
 
     bool operator < (const KedighKid& k2) const
     {
