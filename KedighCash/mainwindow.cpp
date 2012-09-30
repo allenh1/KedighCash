@@ -246,7 +246,7 @@ void MainWindow::parseFile(QString fileInput)
                 int theSize = 0;
                 toSize = "lastname: ";
                 theSize = toSize.size();
-                current.remove(0, theSize - 1);
+                current.remove(0, theSize);
                 lastname = current;
                 z++; //we can go to the next line now
 
@@ -366,7 +366,7 @@ void MainWindow::parseFile(QString fileInput)
                     current = asList.at(z);
                     toSize = "lastname: ";
                     theSize = toSize.size();
-                    current.remove(0, theSize - 1);
+                    current.remove(0, theSize);
                     lastname = current;
                     z += 3; //we can go to the next line now
                 }
@@ -611,6 +611,15 @@ void MainWindow::exportTab()
     }//end if
 }
 
+inline QString reverse(QString in)
+{
+    QString toReturn = "";
+    for (int x = in.size() - 1; x >= 0; x--)
+        toReturn += in[x];
+
+    return toReturn;
+}//flip a string.
+
 void MainWindow::save()
 {
     QString output = "";
@@ -634,16 +643,22 @@ void MainWindow::save()
     {
         KedighKid current = kids.at(x);
         output += current.name;
-        output += "\n\t" + current.getEmail();
+        output += "\n\tEmail: " + current.getEmail();
+        output += "\n\tPeriod: " + current.getPeriod();
         QString asString;
         asString.setNum(current.getBalance());
-        output += "\n\t" + asString;
+        output += "\n\tBalance: $" + asString;
 
         for (int y = 0; y < current.cashOwned().size(); y++)
         {
             KedighCash currentCash = current.cashOwned().at(y);
-            output += "\n\t\t" + currentCash.getSerial();
+            output += "\n\t\t" + currentCash.getSerial() + ": $";
+            QString val;
+            val.setNum(currentCash.getValue());
+            output += val;
         }//end for y.
+
+        output += "\n" + reverse(current.name);
         output += "\n\n";
     }
 
@@ -699,6 +714,11 @@ void MainWindow::checkForSaveFile()
 
     for (int x = 0; x < asList.size(); x++)
     {
+        /**
+          Now, we segment the file.
+          **/
+        QString current = asList.at(x);
+        QString flipped = reverse(current);
 
     }
 
