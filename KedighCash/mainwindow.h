@@ -46,6 +46,8 @@ private:
 
     void parseFile(QString fileInput);
     void sortKids();
+    void checkForSaveFile();
+    void save();
     void countCash();
 };
 

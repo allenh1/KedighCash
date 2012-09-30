@@ -21,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->actionAbout->setIcon(QIcon("questionface.xpm"));
     setWindowIcon(QIcon("btemp.xpm"));
+
+    checkForSaveFile();
 }
 
 void MainWindow::killKid()
@@ -74,7 +76,7 @@ void MainWindow::about()
 
 void MainWindow::displayInfo()
 {
-    int index, indexb;
+    int index;
     index = ui->studentSelect->currentIndex();
 
     if (index == -1)
@@ -444,6 +446,7 @@ void MainWindow::countCash()
     QString total;
     total.setNum(sum);
     ui->totalMoney->setText("$ "+total);
+    save();
 }//end void.
 
 void MainWindow::removeCash()
@@ -459,6 +462,7 @@ void MainWindow::removeCash()
     kids.removeAt(index);
     kids.insert(index, current);
     displayInfo();
+    countCash();
 }
 
 void MainWindow::findCash()
@@ -607,8 +611,95 @@ void MainWindow::exportTab()
     }//end if
 }
 
+void MainWindow::save()
+{
+    QString output = "";
+
+    /**
+      Save format:
+
+      lastname
+        email
+        period
+        balance
+        remote
+            currency 1
+            currency 2
+            currency 3
+            ...
+      emantsal
+      **/
+
+    for (int x = 0; x < kids.size(); x++)
+    {
+        KedighKid current = kids.at(x);
+        output += current.name;
+        output += "\n\t" + current.getEmail();
+        QString asString;
+        asString.setNum(current.getBalance());
+        output += "\n\t" + asString;
+
+        for (int y = 0; y < current.cashOwned().size(); y++)
+        {
+            KedighCash currentCash = current.cashOwned().at(y);
+            output += "\n\t\t" + currentCash.getSerial();
+        }//end for y.
+        output += "\n\n";
+    }
+
+    QFile file("autosave.dat");
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Could not save file"));
+        return;
+    }//end if
+
+    else
+    {
+        QTextStream stream(&file);
+        stream << output;
+        stream.flush();
+        file.close();
+    }//end else
+}
+
 void MainWindow::open()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Text Files (*.txt);; C++ Files (*.cpp *.h *.cc)"));
     parseFile(fileName);
 }//open file dialog
+
+void MainWindow::checkForSaveFile()
+{
+    QString fileInput = "autosave.dat";
+    QList<QString> asList;
+
+    if (fileInput != "")
+    {
+        /**
+          Load the last save into memory.
+
+          Allows us to extract the serials/class members.
+          **/
+
+        QFile file(fileInput);
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Could not open file"));
+            return;
+        }//end if
+        QTextStream in(&file);
+
+
+        while (!in.atEnd())
+        {
+            asList.push_back(in.readLine());
+        }//iterate through the file. All of it. Store.
+    }//end if.
+
+    for (int x = 0; x < asList.size(); x++)
+    {
+
+    }
+
+}//open last save.
