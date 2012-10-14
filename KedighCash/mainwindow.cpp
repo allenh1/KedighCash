@@ -719,7 +719,68 @@ void MainWindow::checkForSaveFile()
           **/
         QString current = asList.at(x);
         QString flipped = reverse(current);
+        QList<QString> currentKid;
 
+        int y = x;
+
+        while (asList.at(y) != flipped)
+        {
+            y++;
+        }
+
+        for (int z = x; z < y; z++)
+        {
+            currentKid.push_back(asList.at(z));
+            x++;
+        }//end for z.
+
+        if (true)
+        {
+            QString last = currentKid.at(0);
+            QString email = currentKid.at(1);
+            int index = email.indexOf(":") + 1;
+            email.remove(0, index);
+            QString period = currentKid.at(2);
+            index = period.indexOf(":") + 1;
+            period.remove(0, index);
+            QString balance = currentKid.at(3);
+
+            KedighKid toPush(last, period, email);
+
+
+            for (int i = 4; i < currentKid.size(); i++)
+            {
+                QString line = currentKid.at(i);
+                QString tabLength = "\t\t";
+                line.remove(0, tabLength.length());
+                int index = line.indexOf(":");
+                QString serial = line;
+                serial.remove(index, line.size());
+                QString denom = line;
+                denom.remove(0, serial.size());
+                QString toSize = " $";
+                denom.remove(0, 3);
+                int _denomination = denom.toInt();
+
+                KedighCash money(serial, "Today", _denomination);
+                toPush.addMoney(money);
+            }
+            kids.push_back(toPush);
+            x++;
+        }
     }
 
+    qSort(kids.begin(), kids.end());
+    for (int i = 0; i < kids.size(); i++)
+    {
+        ui->studentSelect->addItem(kids.at(i).name);
+    }
+
+    for (int y = 0; y < kids.size(); y++)
+    {
+        ui->fileDisplay->addItem(kids.at(y).name);
+    }
+
+    countCash();
+    displayInfo();
 }//open last save.
