@@ -15,6 +15,9 @@ void KedighKid::addMoney(KedighCash toAdd)
 
 }
 
+void KedighKid::setMail(const QString _mail)
+{ email = _mail; }
+
 void KedighKid::removeMoney(int index)
 {
     money.removeAt(index);

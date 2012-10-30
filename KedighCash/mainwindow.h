@@ -23,6 +23,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     Q_SLOT void open();
+    Q_SLOT void updateEmail();
     Q_SLOT void exportTab();
     Q_SLOT void displayInfo();
     Q_SLOT void displayInfo2();

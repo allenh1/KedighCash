@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
+    connect(ui->email, SIGNAL(textEdited(QString)), this, SLOT(updateEmail()));
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(exit()));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui->killKid, SIGNAL(clicked()), this, SLOT(killKid()));
@@ -51,6 +52,18 @@ void MainWindow::killKid()
 
     countCash();
 }//remove kid.
+
+void MainWindow::updateEmail()
+{
+    int index = ui->studentSelect->currentIndex();
+
+    KedighKid current = kids.at(index);
+    current.setMail(ui->email->text());
+
+    kids.replace(index, current);
+
+    countCash();
+}
 
 void MainWindow::exit()
 {
@@ -485,6 +498,9 @@ void MainWindow::findCash()
             {
                 //found the student!
                 ui->studentSelect->setCurrentIndex(i);
+
+                displayInfo();
+                countCash();
                 broke = true;
                 break;
             }//end if

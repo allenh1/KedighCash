@@ -8,9 +8,17 @@ KedighCash::KedighCash(QString ser, QString _date, int denom)
 
     if (m_serial.contains("o"))
     {
-        m_serial.replace("o", "0");
+        int index = m_serial.indexOf("o");
+        m_serial.replace(index, "0");
     }
 
+
+        if (m_serial.contains(" "))
+        {
+            m_serial.replace(" ", "");
+        }//remove blank space.
+
+    m_serial = m_serial.toUpper();
     toString();
 }//end constructor.
 

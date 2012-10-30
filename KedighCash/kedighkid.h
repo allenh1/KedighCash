@@ -10,6 +10,7 @@ public:
     int compareTo(KedighKid other);
     void addMoney(KedighCash toAdd);
     void removeMoney(int index);
+    void setMail(const QString _mail);
 
     QList<KedighCash> cashOwned();
 
