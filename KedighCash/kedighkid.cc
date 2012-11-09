@@ -6,6 +6,11 @@ KedighKid::KedighKid(QString _name, QString _period, QString _email)
     name = _name;
     period = _period;
     email = _email;
+
+    if (email.contains(" "))
+    {
+        email.replace(" ", "");
+    }
 }
 
 void KedighKid::addMoney(KedighCash toAdd)

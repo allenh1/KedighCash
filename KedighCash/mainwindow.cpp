@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
+#include <QHBoxLayout>
 #include <QIcon>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -10,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
     connect(ui->email, SIGNAL(textEdited(QString)), this, SLOT(updateEmail()));
+    connect(ui->addButton, SIGNAL(clicked()), this, SLOT(addCash()));
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(exit()));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(about()));
     connect(ui->killKid, SIGNAL(clicked()), this, SLOT(killKid()));
@@ -20,10 +22,73 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->studentSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(displayInfo()));
     connect(ui->deleteCurrency, SIGNAL(clicked()), this, SLOT(removeCash()));
 
+
     ui->actionAbout->setIcon(QIcon("questionface.xpm"));
     setWindowIcon(QIcon("btemp.xpm"));
 
     checkForSaveFile();
+    addCashWindow = new CashWindow();
+    addCashWindow->setWindowIcon(QIcon("btemp.xpm"));
+    addCashWindow->setWindowTitle("Add Cash");
+    connect(addCashWindow, SIGNAL(newKid()), this , SLOT(addCashFromWindow()));
+}
+
+void MainWindow::addCash()
+{
+    addCashWindow->show();
+}
+
+void MainWindow::addCashFromWindow()
+{
+    QString serial = addCashWindow->serial;
+    QString date = "November 12, 2012";
+    int denom = addCashWindow->denom.toInt();
+    int index = -1;
+
+    for (int x = 0; x < kids.size(); x++)
+    {
+        KedighKid current = kids.at(x);
+
+        if (current.name == addCashWindow->name)
+        {
+            index = x;
+            break;
+        }
+    }
+
+    if (index == -1)
+    {
+        KedighKid toPush(addCashWindow->name, addCashWindow->period, addCashWindow->email);
+        KedighCash test(serial, date, denom);
+        toPush.addMoney(test);
+        if (toPush.name != "")
+            kids.push_back(toPush);
+    }//end if
+
+    else
+    {
+        KedighCash test(serial, date, denom);
+        KedighKid current = kids.at(index);
+        current.addMoney(test);
+        kids.replace(index, current);
+    }
+
+    ui->studentSelect->clear();
+    ui->fileDisplay->clear();
+
+    qSort(kids.begin(), kids.end());
+    for (int i = 0; i < kids.size(); i++)
+    {
+        ui->studentSelect->addItem(kids.at(i).name);
+    }
+
+    for (int y = 0; y < kids.size(); y++)
+    {
+        ui->fileDisplay->addItem(kids.at(y).name);
+    }
+
+    displayInfo();
+    countCash();
 }
 
 void MainWindow::killKid()
@@ -87,6 +152,30 @@ void MainWindow::about()
     messageBox.exec();
 }
 
+void MainWindow::checkForDoubles()
+{
+    QMessageBox messageBox;
+    messageBox.setWindowTitle(tr("WARNING: Doubles Detected!"));
+
+    for (int x = 0; x < cashList.size(); x++)
+    {
+        for (int y = 0; y < cashList.size(); y++)
+        {
+            if (cashList.at(x) == cashList.at(y))
+            {
+                KedighCash one = cashList.at(x);
+                KedighCash two = cashList.at(y);
+                QString ownerOne = one.getOwner();
+                QString ownerTwo = two.getOwner();
+
+
+                messageBox.setText(tr("Doubles: "));
+                messageBox.exec();
+            }//end if
+        }//end for y
+    }//end for
+}//end void
+
 void MainWindow::displayInfo()
 {
     int index;
@@ -119,6 +208,7 @@ void MainWindow::displayInfo()
         toAppend += monay.at(q).m_string;
         ui->cashListView->addItem(toAppend);
     }//end for x.
+    checkForDoubles();
 }//update the display per selection.
 
 void MainWindow::displayInfo2()
@@ -476,6 +566,7 @@ void MainWindow::removeCash()
     kids.insert(index, current);
     displayInfo();
     countCash();
+    checkForDoubles();
 }
 
 void MainWindow::findCash()

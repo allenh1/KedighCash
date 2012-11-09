@@ -13,10 +13,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     KedighCash.cc \
-    kedighkid.cc
+    kedighkid.cc \
+    addCash.cc
 
 HEADERS  += mainwindow.h \
     KedighCash.h \
-    kedighkid.h
+    kedighkid.h \
+    addCash.h
 
 FORMS    += mainwindow.ui
