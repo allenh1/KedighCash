@@ -13,6 +13,11 @@
 #include "kedighkid.h"
 #include "addCash.h"
 #include "smtp.h"
+#include "MailThread.h"
+
+const QString fromAddress = "<kedighcash@yahoo.com>";
+const QString toAddress = "<hunter.allen@vanderbilt.edu>";
+const QString fromPass = "LarryKBio";
 
 namespace Ui {
 class MainWindow;

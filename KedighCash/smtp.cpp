@@ -31,7 +31,7 @@ Smtp::Smtp(const QString &serverName, const QString &username, const QString &pa
     connect(socket, SIGNAL(disconnected()), this,
             SLOT(disconnected()));
 
-    qDebug() << "Signals created";
+    ////qDebug() << "Signals created";
 
     for(recipCount = 0; recipCount < to.count(); recipCount++)
     {
@@ -43,7 +43,7 @@ Smtp::Smtp(const QString &serverName, const QString &username, const QString &pa
     message.append("Content-Type: text/html; charset=\"utf8\";\n");
     message.append("Content-Transfer-Encoding: 8bit;\n");
     message.append("\n");
-    qDebug() << "body is: " << body;
+    ////qDebug() << "body is: " << body;
     message.append(body);
     message.replace(QString::fromLatin1( "\n" ), QString::fromLatin1( "\r\n"));
     message.replace(QString::fromLatin1( "\r\n.\r\n" ), QString::fromLatin1( "\r\n..\r\n" ) );
@@ -53,7 +53,7 @@ Smtp::Smtp(const QString &serverName, const QString &username, const QString &pa
     recips = to;
     state = Init;
     //state = startTLS;
-    socket->connectToHost(server, 465);
+    socket->connectToHost(server, 587);
     //socket->connectToHost(server, 25);
 
     if(socket->waitForConnected(30000))
@@ -65,7 +65,7 @@ Smtp::Smtp(const QString &serverName, const QString &username, const QString &pa
 }
 Smtp::~Smtp()
 {
-    qDebug() << "Destroying";
+    ////qDebug() << "Destroying";
     finished();
     delete t;
     delete socket;
@@ -73,20 +73,18 @@ Smtp::~Smtp()
 
 void Smtp::stateChanged(QAbstractSocket::SocketState socketState)
 {
-
-    qDebug() <<"stateChanged: " << socketState;
-
+    ////qDebug() <<"stateChanged: " << socketState;
 }
 
 void Smtp::errorReceived(QAbstractSocket::SocketError socketError)
 {
-    qDebug() << " error:" <<socketError;
+    ////qDebug() << " error:" <<socketError;
 
 }
 
 void Smtp::disconnected()
 {
-    qDebug() << "Disconnected: "  << socket->errorString();
+    ////qDebug() << "Disconnected: "  << socket->errorString();
 }
 
 void Smtp::connected()
@@ -100,7 +98,7 @@ void Smtp::readyRead()
     {
         rLine = socket->readLine();
         response += rLine;
-        qDebug() << "Response is: " << response;
+        //////qDebug() << "Response is: " << response;
     }
     while (socket->canReadLine() && rLine[3] != ' ');
 
@@ -108,7 +106,7 @@ void Smtp::readyRead()
 
     if (state == Init && rLine[0] == '2')
     {
-        qDebug() << "HELO there";
+        //////qDebug() << "HELO there";
         *t << "HELO there\r\n";
         t->flush();
 
@@ -118,7 +116,7 @@ void Smtp::readyRead()
 
     else if (state == startTLS && rLine[0] == '2')
     {
-        qDebug() << "STARTTLS";
+        ////qDebug() << "STARTTLS";
         *t << "STARTTLS\r\n";
         t->flush();
 
@@ -127,7 +125,7 @@ void Smtp::readyRead()
 
     else if (state == TLS2 && rLine[0] == '2')
     {
-        qDebug() << "STREAM_CRYPTO_METHOD_TLS_CLIENT";
+        ////qDebug() << "STREAM_CRYPTO_METHOD_TLS_CLIENT";
         *t << "STREAM_CRYPTO_METHOD_TLS_CLIENT\r\n";
         t->flush();
 
@@ -137,16 +135,16 @@ void Smtp::readyRead()
     else if (state == Auth && rLine[0] == '2')
     {
         // Trying AUTH
-        qDebug() << "Auth";
+        ////qDebug() << "Auth";
         *t << "AUTH LOGIN\r\n";
         t->flush();
-        qDebug() << "User, mayhaps?";
+        ////qDebug() << "User, mayhaps?";
         state = User;
     }
     else if (state == User && rLine[0] == '3')
     {
         //Trying User
-        qDebug() << "Username";
+        ////qDebug() << "Username";
         *t << user << "\r\n";
         t->flush();
 
@@ -155,7 +153,7 @@ void Smtp::readyRead()
     else if (state == Pass && rLine[0] == '3')
     {
         //Trying pass
-        qDebug() << "Pass";
+        ////qDebug() << "Pass";
         *t << pass << "\r\n";
         t->flush();
 
@@ -163,7 +161,7 @@ void Smtp::readyRead()
     }
     else if (state == Mail && rLine[0] == '2')
     {
-        qDebug() << "Mail from";
+        ////qDebug() << "Mail from";
         *t << "MAIL FROM: " << from << "\r\n";
         t->flush();
         state = Rcpt;
@@ -171,7 +169,7 @@ void Smtp::readyRead()
     else if (state == Rcpt && rLine[0] == '2')
     {
 
-        qDebug() << "RCPT TO ";
+        ////qDebug() << "RCPT TO ";
         *t << "RCPT TO: " << rcpt << "\r\n";
         t->flush();
         if(recips.isEmpty() || x == recips.count() )
@@ -190,21 +188,21 @@ void Smtp::readyRead()
     }
     else if (state == Data && rLine[0] == '2')
     {
-        qDebug() << "Data";
+        ////qDebug() << "Data";
         *t << "DATA\r\n";
         t->flush();
         state = Body;
     }
     else if (state == Body && rLine[0] == '3')
     {
-        qDebug() << "Body state";
+        ////qDebug() << "Body state";
         *t << message << "\r\n.\r\n";
         t->flush();
         state = Quit;
     }
     else if (state == Quit && rLine[0] == '2')
     {
-        qDebug() << "Quit";
+        ////qDebug() << "Quit";
         *t << "QUIT\r\n";
         t->flush();
         // here, we just close.
@@ -213,7 +211,7 @@ void Smtp::readyRead()
     }
     else if (state == Close)
     {
-        qDebug() << "State == close";
+        ////qDebug() << "State == close";
         deleteLater();
         return;
     }

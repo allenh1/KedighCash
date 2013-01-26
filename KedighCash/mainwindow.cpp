@@ -94,16 +94,20 @@ void MainWindow::addCashFromWindow()
         delete newMail; **/
 
     QStringList receivers;
-    QString hunter = "hunter.allen@Vanderbilt.edu";
-    receivers.push_back(hunter);
+    receivers.push_back(toAddress);
     //Smtp(server, user, pass, from, to, subject, body);
 
-    Smtp *newMail = new Smtp("smtp.mail.yahoo.com", "kedighcash@yahoo.com", "LarryKBio", "kedighcash@yahoo.com", receivers, "Test", "Working!");
-    QEventLoop loop;
-    QObject::connect(newMail, SIGNAL(finished()), &loop, SLOT(quit()));
-    loop.exec();
-
-    //delete newMail;
+	QString messageBody; 
+	messageBody += "KedighCash Deposit: \n";
+	messageBody += "Lastname: " + addCashWindow->name + "\n"; 
+	messageBody += "Serial: " + addCashWindow->serial + "\n"; 
+    messageBody += "Denomination: $" + addCashWindow->denom;
+	
+    //Smtp *newMail = new Smtp("smtp.mail.yahoo.com", "kedighcash@yahoo.com", fromPass, fromAddress, receivers, "Test", messageBody);
+ 
+    MailThread sendMessage(fromAddress, toAddress, fromPass, "New Cash Deposit", messageBody);
+    addCashWindow->hide();
+    sendMessage.run();
 }
 
 void MainWindow::killKid()
