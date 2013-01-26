@@ -89,6 +89,21 @@ void MainWindow::addCashFromWindow()
 
     displayInfo();
     countCash();
+
+    /** Smtp *newMail  = new Smtp("from@address.com","to@address.com"," Your Subject","My body text");
+        delete newMail; **/
+
+    QStringList receivers;
+    QString hunter = "hunterallen40@gmail.com";
+    receivers.push_back(hunter);
+    //Smtp(server, user, pass, from, to, subject, body);
+
+
+    QEventLoop loop;
+    QObject::connect(newMail, SIGNAL(finished()), &loop, SLOT(quit()));
+    loop.exec();
+
+    delete newMail;
 }
 
 void MainWindow::killKid()

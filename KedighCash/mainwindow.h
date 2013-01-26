@@ -8,9 +8,11 @@
 #include <QtAlgorithms>
 #include <QString>
 #include <QTextStream>
+
 #include "KedighCash.h"
 #include "kedighkid.h"
 #include "addCash.h"
+#include "smtp.h"
 
 namespace Ui {
 class MainWindow;
