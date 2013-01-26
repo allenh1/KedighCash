@@ -53,7 +53,7 @@ Smtp::Smtp(const QString &serverName, const QString &username, const QString &pa
     recips = to;
     state = Init;
     //state = startTLS;
-    socket->connectToHost(server, 587);
+    socket->connectToHost(server, 465);
     //socket->connectToHost(server, 25);
 
     if(socket->waitForConnected(30000))
@@ -113,7 +113,7 @@ void Smtp::readyRead()
         t->flush();
 
         //state = startTLS;
-        state = startTLS;
+        state = Auth;
     }
 
     else if (state == startTLS && rLine[0] == '2')

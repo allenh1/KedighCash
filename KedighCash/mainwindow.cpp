@@ -94,16 +94,16 @@ void MainWindow::addCashFromWindow()
         delete newMail; **/
 
     QStringList receivers;
-    QString hunter = "hunterallen40@gmail.com";
+    QString hunter = "hunter.allen@Vanderbilt.edu";
     receivers.push_back(hunter);
     //Smtp(server, user, pass, from, to, subject, body);
 
-
+    Smtp *newMail = new Smtp("smtp.mail.yahoo.com", "kedighcash@yahoo.com", "LarryKBio", "kedighcash@yahoo.com", receivers, "Test", "Working!");
     QEventLoop loop;
     QObject::connect(newMail, SIGNAL(finished()), &loop, SLOT(quit()));
     loop.exec();
 
-    delete newMail;
+    //delete newMail;
 }
 
 void MainWindow::killKid()
