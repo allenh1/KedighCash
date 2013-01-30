@@ -2,11 +2,13 @@
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 #include <QHBoxLayout>
+#include <QCryptographicHash>
 #include <QIcon>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_loggedIn(false)
 {
     ui->setupUi(this);
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
@@ -21,16 +23,26 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionExport, SIGNAL(triggered()), this, SLOT(exportTab()));
     connect(ui->studentSelect, SIGNAL(currentIndexChanged(int)), this, SLOT(displayInfo()));
     connect(ui->deleteCurrency, SIGNAL(clicked()), this, SLOT(removeCash()));
+    connect(ui->loginButton, SIGNAL(clicked()), this, SLOT(login()));
 
 
     ui->actionAbout->setIcon(QIcon("questionface.xpm"));
     setWindowIcon(QIcon("btemp.xpm"));
 
     checkForSaveFile();
+    checkForPasswordFile();
+
     addCashWindow = new CashWindow();
     addCashWindow->setWindowIcon(QIcon("btemp.xpm"));
     addCashWindow->setWindowTitle("Add Cash");
+
     connect(addCashWindow, SIGNAL(newKid()), this , SLOT(addCashFromWindow()));
+
+    loginWindow = new UserWindow();
+    loginWindow->setWindowIcon(QIcon("btemp.xpm"));
+
+    connect(loginWindow, SIGNAL(unlockCash(QString,QString)), this, SLOT(tryUnlock(QString,QString)));
+    connect(loginWindow, SIGNAL(createAccount(QString,QString)), this, SLOT(makeAccount(QString,QString)));
 }
 
 void MainWindow::addCash()
@@ -38,8 +50,75 @@ void MainWindow::addCash()
     addCashWindow->show();
 }
 
+void MainWindow::login()
+{
+    loginWindow->show();
+}//end login
+
+void MainWindow::tryUnlock(QString _user, QString _password)
+{
+    QString encryptedPass;
+    QString encryptedUser;
+
+    encryptedUser = QString(QCryptographicHash::hash((_user.toStdString().c_str()), QCryptographicHash::Md5).toHex());
+    encryptedPass = QString(QCryptographicHash::hash((_password.toStdString().c_str()),QCryptographicHash::Md5).toHex());
+
+    if (encryptedUser == m_username && encryptedPass == m_password)
+    {
+        m_loggedIn = true;
+    }//end if
+
+    else
+    {
+        m_loggedIn = false;
+        QMessageBox messageBox;
+        messageBox.setWindowIcon(QIcon("questionface.xpm"));
+        messageBox.setWindowTitle(tr("Login Failed"));
+        messageBox.setText(tr("ERROR: Invalid Login! You cannot modify cash without a valid login!"));
+        messageBox.setStandardButtons(QMessageBox::Ok);
+
+        if (messageBox.exec() == QMessageBox::Ok)
+            messageBox.close();
+    }//invalid login window
+}//end void
+
+void MainWindow::makeAccount(QString _user, QString _password)
+{
+    m_loggedIn = true;
+    m_username = _user;
+    m_password = _password;
+    QString encryptedPass;
+    QString encryptedUser;
+
+    encryptedUser = QString(QCryptographicHash::hash((_user.toStdString().c_str()), QCryptographicHash::Md5).toHex());
+    encryptedPass = QString(QCryptographicHash::hash((_password.toStdString().c_str()),QCryptographicHash::Md5).toHex());
+
+    QString output;
+    output = "User: " + encryptedUser + "\n";
+    output += "Password: " + encryptedPass;
+
+    QFile file("password.txt");
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Could not save file"));
+        return;
+    }//end if
+
+    else
+    {
+        QTextStream stream(&file);
+        stream << output;
+        stream.flush();
+        file.close();
+    }//end else
+
+}//create account
+
 void MainWindow::addCashFromWindow()
 {
+    if (!m_loggedIn)
+        return;
+
     QString serial = addCashWindow->serial;
     QString date = "November 12, 2012";
     int denom = addCashWindow->denom.toInt();
@@ -112,6 +191,9 @@ void MainWindow::addCashFromWindow()
 
 void MainWindow::killKid()
 {
+    if (!m_loggedIn)
+        return;
+
     int index = ui->studentSelect->currentIndex();
 
     if (index == -1)
@@ -573,6 +655,9 @@ void MainWindow::countCash()
 
 void MainWindow::removeCash()
 {
+    if (!m_loggedIn)
+        return;
+
     int index = 0;
     int cash_index;
     cash_index = ui->cashListView->currentIndex().row();
@@ -910,3 +995,55 @@ void MainWindow::checkForSaveFile()
     countCash();
     displayInfo();
 }//open last save.
+
+void MainWindow::checkForPasswordFile()
+{
+    QString fileInput = "password.txt";
+    QList<QString> asList;
+
+    QFile file(fileInput);
+
+    if (!file.exists())
+    {
+        UserWindow * newUser = new UserWindow(0, false);
+        connect(newUser, SIGNAL(createAccount(QString,QString)), this, SLOT(makeAccount(QString,QString)));
+        newUser->show();
+    }//end if
+
+
+    else if (fileInput != "")
+    {
+        /**
+          Load the password into memory.
+
+          **/
+
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Could not open file"));
+            return;
+        }//end if
+        QTextStream in(&file);
+
+
+        while (!in.atEnd())
+        {
+            asList.push_back(in.readLine());
+        }//iterate through the file. All of it. Store.
+
+    if (asList.size() > 0)
+    {
+        QString current = asList.at(0);
+        int i1 = current.indexOf("User:");
+        current.remove(0, 6);
+        m_username = current;
+        current = asList.at(1);
+        //"password: "
+        current.remove(0, 10);
+        m_password = current;
+    }//end if
+
+    countCash();
+    displayInfo();
+    }//open last save.
+}

@@ -13,6 +13,7 @@
 #include "kedighkid.h"
 #include "addCash.h"
 #include "smtp.h"
+#include "userWindow.h"
 #include "MailThread.h"
 
 const QString fromAddress = "<kedighcash@yahoo.com>";
@@ -43,10 +44,15 @@ public:
     Q_SLOT void about();
     Q_SLOT void removeCash();
     Q_SLOT void killKid();
+    Q_SLOT void login();
+
+    Q_SLOT void tryUnlock(QString,QString);
+    Q_SLOT void makeAccount(QString,QString);
 
     void checkForDoubles();
 
     CashWindow * addCashWindow;
+    UserWindow * loginWindow;
 
     QString dataOutput();
     QString getList();
@@ -59,11 +65,17 @@ private:
     bool caseInsensitiveLessThan(const KedighCash &s1,
                                  const KedighCash &s2);
 
+    QString m_password;
+    QString m_username;
+
     void parseFile(QString fileInput);
     void sortKids();
     void checkForSaveFile();
+    void checkForPasswordFile();
     void save();
     void countCash();
+
+    bool m_loggedIn;
 };
 
 #endif // MAINWINDOW_H

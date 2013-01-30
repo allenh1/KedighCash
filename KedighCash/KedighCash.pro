@@ -17,13 +17,15 @@ SOURCES += main.cpp\
     kedighkid.cc \
     addCash.cc \
     smtp.cpp \
-    MailThread.cpp
+    MailThread.cpp \
+    userWindow.cpp
 
 HEADERS  += mainwindow.h \
     KedighCash.h \
     kedighkid.h \
     addCash.h \
     smtp.h \
-    MailThread.h
+    MailThread.h \
+    userWindow.h
 
 FORMS    += mainwindow.ui
