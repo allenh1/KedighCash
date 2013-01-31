@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     loginWindow->setWindowIcon(QIcon("btemp.xpm"));
 
     connect(loginWindow, SIGNAL(unlockCash(QString,QString)), this, SLOT(tryUnlock(QString,QString)));
-    connect(loginWindow, SIGNAL(createAccount(QString,QString)), this, SLOT(makeAccount(QString,QString)));
+    //connect(loginWindow, SIGNAL(createAccount(QString,QString)), this, SLOT(makeAccount(QString,QString)));
 }
 
 void MainWindow::addCash()
@@ -248,7 +248,7 @@ void MainWindow::about()
 {
     QMessageBox messageBox;
     messageBox.setWindowTitle(tr("About"));
-    messageBox.setText(tr("\t KedighCash \n \t Version: 1.0 \n               Author: Hunter Allen \n Email: hutner.allen@Vanderbilt.edu"));
+    messageBox.setText(tr("\t KedighCash \n \t Version: 1.0 \n            Author: Hunter Allen \n Email: hutner.allen@Vanderbilt.edu"));
     messageBox.setWindowIcon(QIcon("questionface.xpm"));
     messageBox.exec();
 }
