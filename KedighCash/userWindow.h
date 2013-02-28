@@ -1,6 +1,7 @@
 #ifndef USERWINDOW_H
 #define USERWINDOW_H
 
+#include <QtWidgets>
 #include <QMainWindow>
 #include <QList>
 #include <QFileDialog>

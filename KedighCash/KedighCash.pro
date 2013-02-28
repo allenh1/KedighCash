@@ -4,12 +4,12 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network widgets
 
 TARGET = KedighCash
 TEMPLATE = app
 
-LIBS += -L $$(QMF_LIBDIR) -lqtopiamail
+#LIBS += -L $$(QMF_LIBDIR) -lqtopiamail
 
 SOURCES += main.cpp\
         mainwindow.cpp \

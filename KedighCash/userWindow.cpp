@@ -19,8 +19,7 @@ UserWindow::UserWindow(QWidget *parent, bool existingFile)
     layout2 = new QHBoxLayout();
 
     connect(loginButton, SIGNAL(clicked()), this, SLOT(close()));
-    connect(passwordEdit, SIGNAL(textEdited(QString)), this, SLOT(sendToMain()));
-
+    
     layout->addWidget(p_label);
     layout->addWidget(nameEdit);
 

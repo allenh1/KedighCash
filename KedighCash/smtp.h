@@ -29,7 +29,7 @@ public:
     void initalise();
 
 signals:
-        void status( const QString &);
+        void status(const QString &);
         void finished();
 
 private slots:

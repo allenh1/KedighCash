@@ -407,23 +407,23 @@ void MainWindow::parseFile(QString fileInput)
 
             if (asList.at(z).contains("From"))
             {
-                int i1, i2;
+                int index1, index2;
                 QString current;
                 current = asList.at(z);
                 if (current.contains("["))
                 {
-                    i1 = current.indexOf("[");
-                    current.remove(0, i1 + 1);
-                    i2 = current.indexOf("]");
-                    current.remove(i2, current.size() - 1);
+                    index1 = current.indexOf("[");
+                    current.remove(0, index1 + 1);
+                    index2 = current.indexOf("]");
+                    current.remove(index2, current.size() - 1);
                 }//end if
 
                 else
                 {
-                    i1 = current.indexOf("<");
-                    current.remove(0, i1 + 1);
-                    i2 = current.indexOf(">");
-                    current.remove(i2, current.size() - 1);
+                    index1 = current.indexOf("<");
+                    current.remove(0, index1 + 1);
+                    index2 = current.indexOf(">");
+                    current.remove(index2, current.size() - 1);
                 }
 
                 email = current;
@@ -431,10 +431,10 @@ void MainWindow::parseFile(QString fileInput)
 
                 current = asList.at(z);
 
-                i1 = current.indexOf(",");
-                current.remove(0, i1 + 1);
-                i2 = current.indexOf(":");
-                current.remove(i2 - 2, current.size() - 1);
+                index1 = current.indexOf(",");
+                current.remove(0, index1 + 1);
+                index2 = current.indexOf(":");
+                current.remove(index2 - 2, current.size() - 1);
                 date = current;
                 z++;
             }
@@ -533,15 +533,15 @@ void MainWindow::parseFile(QString fileInput)
                 QString lastname, period, version, denom,
                         serial, remote;
                 //we have a section to extract from.
-                QString toSize;
+                QString toSize; 
                 QString current;
                 current = asList.at(z);
                 int theSize = 0;
                 toSize = "denomination: ";
-                current = asList.at(z);
+                current = asList.at(z); 
                 current.remove(0, toSize.size() - 1);
                 denom = current;
-                z++;
+                z++; 
 
 
                 if (asList.at(z).contains("serial"))
@@ -897,7 +897,7 @@ void MainWindow::open()
 
 void MainWindow::checkForSaveFile()
 {
-    QString fileInput = "autosave.dat";
+    QString fileInput = QFileDialog::getSaveFileName(this, tr("Autosave File"), "", tr("Data File (*.dat)"));
     QList<QString> asList;
 
     if (fileInput != "")
@@ -999,6 +999,7 @@ void MainWindow::checkForSaveFile()
 void MainWindow::checkForPasswordFile()
 {
     QString fileInput = "password.txt";
+
     QList<QString> asList;
 
     QFile file(fileInput);
@@ -1008,8 +1009,7 @@ void MainWindow::checkForPasswordFile()
         UserWindow * newUser = new UserWindow(0, false);
         connect(newUser, SIGNAL(createAccount(QString,QString)), this, SLOT(makeAccount(QString,QString)));
         newUser->show();
-    }//end if
-
+    }//first run, or file cannot be found.
 
     else if (fileInput != "")
     {
@@ -1034,7 +1034,7 @@ void MainWindow::checkForPasswordFile()
     if (asList.size() > 0)
     {
         QString current = asList.at(0);
-        int i1 = current.indexOf("User:");
+        int index1 = current.indexOf("User:");
         current.remove(0, 6);
         m_username = current;
         current = asList.at(1);
