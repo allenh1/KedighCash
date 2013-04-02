@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(addCashWindow, SIGNAL(newKid()), this , SLOT(addCashFromWindow()));
 
-    loginWindow = new UserWindow();
+    loginWindow = new UserWindow(0, true);
     loginWindow->setWindowIcon(QIcon("btemp.xpm"));
 
     connect(loginWindow, SIGNAL(unlockCash(QString,QString)), this, SLOT(tryUnlock(QString,QString)));
@@ -801,7 +801,7 @@ void MainWindow::saveData()
 
 void MainWindow::exportTab()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Text Files (*.txt);;C++ Files (*.cpp *.h *.cc)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "", tr("Text Files (*.txt)"));
 
     if (fileName != "")
     {
@@ -897,7 +897,12 @@ void MainWindow::open()
 
 void MainWindow::checkForSaveFile()
 {
-    QString fileInput = QFileDialog::getSaveFileName(this, tr("Autosave File"), "", tr("Data File (*.dat)"));
+    QFile file2("autosave.dat");
+    QString fileInput = "autosave.dat";
+
+    if (!file2.exists())
+        QString fileInput = QFileDialog::getSaveFileName(this, tr("Autosave File"), "", tr("Data File (*.dat)"));
+
     QList<QString> asList;
 
     if (fileInput != "")

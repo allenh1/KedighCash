@@ -17,7 +17,7 @@
 #include "MailThread.h"
 
 const QString fromAddress = "<kedighcash@yahoo.com>";
-const QString toAddress = "<hunter.allen@vanderbilt.edu>";
+const QString toAddress = "<larryk@wcs.edu>";
 const QString fromPass = "LarryKBio";
 
 namespace Ui {
