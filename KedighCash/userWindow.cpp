@@ -1,5 +1,6 @@
 #include "userWindow.h"
 #include "kedighkid.h"
+#include <iostream>
 
 UserWindow::UserWindow(QWidget *parent, bool existingFile)
     : QWidget(parent)
@@ -94,12 +95,13 @@ void UserWindow::setWindowFlags(Qt::WindowFlags flags)
 
 void UserWindow::close()
 {
+    //std::cout<<"\nIn Close Method\n";
     m_userName = nameEdit->text();
     m_password = passwordEdit->text();
 
-    if (!m_createOnly)
+    //if (!m_createOnly)
         Q_EMIT unlockCash(m_userName,m_password);
-    else
+    //else
         Q_EMIT createAccount(m_userName,m_password);
 
     nameEdit->setText("");

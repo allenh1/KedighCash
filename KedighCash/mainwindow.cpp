@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
+#include <iostream>
 #include <QHBoxLayout>
 #include <QCryptographicHash>
 #include <QIcon>
@@ -57,6 +58,7 @@ void MainWindow::login()
 
 void MainWindow::tryUnlock(QString _user, QString _password)
 {
+    //std::cout<<"\nIn Unlock method\n";
     QString encryptedPass;
     QString encryptedUser;
 
@@ -66,6 +68,14 @@ void MainWindow::tryUnlock(QString _user, QString _password)
     if (encryptedUser == m_username && encryptedPass == m_password)
     {
         m_loggedIn = true;
+
+        QMessageBox messageBox; 
+        messageBox.setWindowTitle(tr("Login Successful!"));
+        messageBox.setText("Successful login!");
+        messageBox.setStandardButtons(QMessageBox::Ok);
+
+        if (messageBox.exec() == QMessageBox::Ok)
+            messageBox.close();
     }//end if
 
     else
@@ -110,6 +120,7 @@ void MainWindow::makeAccount(QString _user, QString _password)
         stream << output;
         stream.flush();
         file.close();
+        file.copy(QString(".password.txt"));
     }//end else
 
 }//create account
@@ -887,6 +898,8 @@ void MainWindow::save()
         stream.flush();
         file.close();
     }//end else
+
+    file.copy(QString(".autosave.dat"));
 }
 
 void MainWindow::open()
@@ -900,8 +913,11 @@ void MainWindow::checkForSaveFile()
     QFile file2("autosave.dat");
     QString fileInput = "autosave.dat";
 
-    if (!file2.exists())
+    if (!file2.exists() && !QFile(QString(".autosave.dat")).exists())
         QString fileInput = QFileDialog::getSaveFileName(this, tr("Autosave File"), "", tr("Data File (*.dat)"));
+
+    else if (!file2.exists() && QFile(QString(".autosave.dat")).exists())
+        QFile(QString(".autosave.dat")).copy(fileInput);
 
     QList<QString> asList;
 
@@ -1004,17 +1020,56 @@ void MainWindow::checkForSaveFile()
 void MainWindow::checkForPasswordFile()
 {
     QString fileInput = "password.txt";
+    QString hidden = ".password.txt";
 
     QList<QString> asList;
 
     QFile file(fileInput);
 
-    if (!file.exists())
+    if (!file.exists() && !QFile(hidden).exists())
     {
         UserWindow * newUser = new UserWindow(0, false);
         connect(newUser, SIGNAL(createAccount(QString,QString)), this, SLOT(makeAccount(QString,QString)));
         newUser->show();
     }//first run, or file cannot be found.
+
+    else if (!file.exists() && QFile(hidden).exists())
+    {
+        QFile file2(hidden);
+        file2.copy(fileInput);
+        /**
+          Load the password into memory.
+
+          **/
+
+        if (!file2.open(QIODevice::ReadOnly))
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Could not open file"));
+            return;
+        }//end if
+        QTextStream in(&file2);
+
+
+        while (!in.atEnd())
+        {
+            asList.push_back(in.readLine());
+        }//iterate through the file. All of it. Store.
+
+    if (asList.size() > 0)
+    {
+        QString current = asList.at(0);
+        int index1 = current.indexOf("User:");
+        current.remove(0, 6);
+        m_username = current;
+        current = asList.at(1);
+        //"password: "
+        current.remove(0, 10);
+        m_password = current;
+    }//end if
+
+    countCash();
+    displayInfo();
+    }//someone poisoned the water hole! 
 
     else if (fileInput != "")
     {
